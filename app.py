@@ -57,6 +57,24 @@ if page == "👤 客戶點餐 (Customer View)":
     # 設定變數取得
     today_str = datetime.datetime.now().strftime("%Y-%m-%d")
     query_date_str = str(get_setting(settings_df, "QueryDate", today_str))
+
+    # 檢查是否非今日日期
+    if query_date_str != today_str:
+        warn_col1, warn_col2 = st.columns([3, 1])
+        with warn_col1:
+            st.warning(f"⚠️ 注意：目前系統點餐的日期為 **{query_date_str}**，並非今日！")
+        with warn_col2:
+            if st.button("🔄 切換為今日", key="btn_reset_cust", use_container_width=True):
+                try:
+                    df_to_save = settings_df.copy()
+                    if df_to_save.empty: df_to_save = pd.DataFrame(columns=["Key", "Value"])
+                    df_to_save = df_to_save[df_to_save["Key"] != "QueryDate"]
+                    df_to_save = pd.concat([df_to_save, pd.DataFrame([{"Key": "QueryDate", "Value": today_str}])], ignore_index=True)
+                    conn.update(worksheet="Settings", data=df_to_save)
+                    clear_cache()
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ 更新失敗：{e}")
     
     # 載入產品與訂單資料
     products_df = load_data("Products")
@@ -248,6 +266,24 @@ elif page == "🧾 前台訂單狀態 (Order Status)":
         
     today_str = datetime.datetime.now().strftime("%Y-%m-%d")
     query_date_str = str(get_setting(settings_df, "QueryDate", today_str))
+
+    # 檢查是否非今日日期
+    if query_date_str != today_str:
+        warn_col1, warn_col2 = st.columns([3, 1])
+        with warn_col1:
+            st.warning(f"⚠️ 注意：目前查詢的訂單日期為 **{query_date_str}**，並非今日！")
+        with warn_col2:
+            if st.button("🔄 切換為今日", key="btn_reset_status", use_container_width=True):
+                try:
+                    df_to_save = settings_df.copy()
+                    if df_to_save.empty: df_to_save = pd.DataFrame(columns=["Key", "Value"])
+                    df_to_save = df_to_save[df_to_save["Key"] != "QueryDate"]
+                    df_to_save = pd.concat([df_to_save, pd.DataFrame([{"Key": "QueryDate", "Value": today_str}])], ignore_index=True)
+                    conn.update(worksheet="Settings", data=df_to_save)
+                    clear_cache()
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ 更新失敗：{e}")
     show_unfinished = get_setting(settings_df, "ShowUnfinished", True)
     show_finished = get_setting(settings_df, "ShowFinishedNotPicked", True)
     
