@@ -29,11 +29,12 @@
    pip install -r requirements.txt
    ```
 3. **準備您的 Google Sheets 資料庫**：
-   請建立一個全新的試算表，並包含以下四個工作表 (Tabs)：
+   請建立一個全新的試算表，並包含以下五個工作表 (Tabs)：
    - `Products` (欄位: ID, Name, Price, Cost, Stock, Is_Active)
-   - `Orders` (欄位: OrderID, Timestamp, Total_Amount, Discounted_Amount, Status, Admin_Remark)
+   - `Orders` (欄位: OrderID, Timestamp, Total_Amount, Discounted_Amount, Status, Admin_Remark, Modification_Log)
    - `Order_Details` (欄位: OrderID, ProductName, Quantity, Price, Remark)
    - `Discounts` (欄位: ID, Name, Threshold, DiscountRate, Is_Active)
+   - `Settings` (欄位: Key, Value)
 4. **設定 Google Sheets 連線 Secrets (很重要！)**
    - 按照下方的「Google Sheets 金鑰設定」，在專案建立 `.streamlit/secrets.toml`。
 5. **啟動應用程式：**
@@ -44,7 +45,7 @@
 ---
 
 ## 📊 Google Sheets 資料表結構參考
-為了讓系統正常運作，您的 Google 試算表必須包含以下**四個獨立的工作表 (Tabs)**，並且**第一列(Row 1) 必須填寫完全一致的欄位名稱 (Header)**：
+為了讓系統正常運作，您的 Google 試算表必須包含以下**五個獨立的工作表 (Tabs)**，並且**第一列(Row 1) 必須填寫完全一致的欄位名稱 (Header)**：
 
 ### 1. `Products` (產品清單)
 | ID | Name | Price | Cost | Stock | Is_Active |
@@ -54,9 +55,9 @@
 *(註：Is_Active 中 1 代表上架、0 代表下架)*
 
 ### 2. `Orders` (訂單總覽)
-| OrderID | Timestamp | Total_Amount | Discounted_Amount | Status | Admin_Remark |
-|:---|:---|:---|:---|:---|:---|
-| ORD-A1B2 | 2024-03-01 12:00:00 | 500 | 450 | Pending | (管理員備註) |
+| OrderID | Timestamp | Total_Amount | Discounted_Amount | Status | Admin_Remark | Modification_Log |
+|:---|:---|:---|:---|:---|:---|:---|
+| ORD-A1B2 | 2024-03-01 12:00:00 | 500 | 450 | Pending (待處理) | (管理員備註) | (修改金額與時間紀錄) |
 
 ### 3. `Order_Details` (訂單明細)
 | OrderID | ProductName | Quantity | Price | Remark |
@@ -68,6 +69,14 @@
 |:---|:---|:---|:---|:---|
 | D001 | 滿五百九折 | 500 | 0.9 | 1 |
 | D002 | 滿千八五折 | 1000 | 0.85 | 1 |
+
+### 5. `Settings` (系統全域設定)
+此表用於儲存管理者後台的設定，影響客戶點餐畫面的資料顯示。
+| Key | Value |
+|:---|:---|
+| QueryDate | 2024-12-01 |
+| ShowUnfinished | True |
+| ShowFinishedNotPicked | False |
 
 ---
 
